@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-...your-integrity-hash..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Select a Date:</h2>
+
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flash">
+        <span
+          class="closebtn"
+          onclick="this.parentElement.style.display='none';"
+          >&times;</span
+        >
+        <ul>
+          {% for message in messages %}
+          <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %} {% endwith %}
+
+      <form method="POST">
+        <input type="date" name="date" required />
+        <button class="button" role="button" type="submit">
+          <span>View</span>
+        </button>
+      </form>
+    </div>
+    <div class="bookings">
+      {% for booking in bookings %}
+      <div class="booking-card">
+        <p><strong>Date:</strong> {{ booking.date }}</p>
+        <p><strong>Client:</strong> {{ booking.client.username }}</p>
+        <p><strong>Size:</strong> {{booking.size}}</p>
+        <p><strong>Description:</strong> {{ booking.description }}</p>
+        <p>
+          <strong>Status:</strong>
+          {% if booking.completed %} Completed ✅{% else %} Not Completed ❌{%
+          endif %}
+        </p>
+        <form
+          action="{{ url_for('delete_booking', booking_id=booking.id) }}"
+          method="POST"
+          onsubmit="return confirm('Delete this booking?');"
+        >
+          <button class="delete" type="submit" title="Delete">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <script>
+      window.addEventListener("pageshow", function (event) {
+        const isBackNav =
+          event.persisted ||
+          window.performance.getEntriesByType("navigation")[0]?.type ===
+            "back_forward";
+        if (isBackNav) {
+          window.location.href = "/";
+        }
+      });
+      
+      window.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.querySelector('input[type="date"]');
+        const today = new Date().toISOString().split("T")[0];
+        dateInput.value = today;
+      });
+
+      const setSizes = () => {
+        const card1Width = document.querySelector(".card-1").clientWidth;
+        const card2Width = document.querySelector(".card-2").clientWidth;
+
+        document
+          .querySelector(".card-1")
+          .setAttribute("data-size", `${card1Width} px`);
+        document
+          .querySelector(".card-2")
+          .setAttribute("data-size", `${card2Width} px`);
+      };
+
+      setSizes();
+
+      window.onresize = setSizes;
+    </script>
+  </body>
+</html>

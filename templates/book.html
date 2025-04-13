@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Book an Entity</h2> 
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flash">
+        <span
+          class="closebtn"
+          onclick="this.parentElement.style.display='none';"
+          >&times;</span
+        >
+          {% for message in messages %}
+          {{ message }}
+          {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+      <form method="POST">
+        <label for="text">Client Name: </label>
+        <input type="text" value="{{ current_user.username }}" disabled />
+        <label for="date">Select a date:</label>
+        <input
+          type="date"
+          id="date"
+          name="date"
+          title="Select the date you want to view bookings for"
+          required
+        />
+        <input type="number" name="size" placeholder="Size" required />
+        <textarea
+          name="description"
+          placeholder="Description"
+          required
+        ></textarea>
+        <button class="button" type="submit"><span>Book</span></button>
+      </form>
+    </div>
+    <script>
+      window.addEventListener("pageshow", function (event) {
+        const isBackNav =
+          event.persisted ||
+          window.performance.getEntriesByType("navigation")[0]?.type ===
+            "back_forward";
+        if (isBackNav) {
+          window.location.href = "/";
+        }
+      });
+    </script>
+  </body>
+</html>
