@@ -139,3 +139,6 @@ def delete_booking(booking_id):
     else:
         flash("Booking not found.")
     return redirect(url_for('view'))
+
+if __name__ == '__main__':
+    app.run(debug=True, host = '0.0.0.0', port = 8085)
