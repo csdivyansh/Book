@@ -11,7 +11,7 @@
   </head>
   <body>
     <div class="container">
-      <h2>Book an Entity</h2> 
+      <h2>Book an Entity</h2>
       {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="flash">
         <span
@@ -19,9 +19,7 @@
           onclick="this.parentElement.style.display='none';"
           >&times;</span
         >
-          {% for message in messages %}
-          {{ message }}
-          {% endfor %}
+        {% for message in messages %} {{ message }} {% endfor %}
       </div>
       {% endif %} {% endwith %}
       <form method="POST">
@@ -44,6 +42,7 @@
         <button class="button" type="submit"><span>Book</span></button>
       </form>
     </div>
+    <footer>© Design and Developed by Divyansh (CsDiv2025)</footer>
     <script>
       window.addEventListener("pageshow", function (event) {
         const isBackNav =

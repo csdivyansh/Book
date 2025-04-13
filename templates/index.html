@@ -10,11 +10,17 @@
     />
   </head>
   <body>
-    <div class = "wrapper">
+    <div class="wrapper">
       <div class="container">
         <div class="title-text">
           <div class="title login">Welcome</div>
         </div>
+        {% with messages = get_flashed_messages() %} {% if messages %}
+        <div class="flash">
+          {% for message in messages %} {{ message }} {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+        <br />
         <a href="{{url_for('book')}}"
           ><button class="button-27" role="button">Book</button></a
         >
@@ -25,6 +31,6 @@
         >
       </div>
     </div>
-    <footer>© Developed by Divyansh (CsDiv2025)</footer>
+    <footer>© Design and Developed by Divyansh (CsDiv2025)</footer>
   </body>
 </html>
