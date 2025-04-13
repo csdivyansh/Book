@@ -1,22 +1,53 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html,
+body {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
 }
 
 h1 {
-    padding: 2rem;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    margin-bottom: 50px;
-    font-size: xxx-large;
+  padding: 2rem;
+  font-size: xx-large;
+  font-family: "Poppins", "sans-serif";
+}
+.wrapper {
+  max-width: 330px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  width: 100%;
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+.wrapper .title {
+  width: 100%;
+  margin-bottom: 4rem;
+  font-size: 35px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.container{
-    justify-items: center;
+.container {
+  align-self: center;
+  justify-items: center;
+  border-radius: 50px;
+  border: #000;
 }
 
 .button-27 {
-
   max-width: 500rem;
   max-height: 100rem;
   appearance: none;
@@ -42,7 +73,7 @@ h1 {
   -webkit-user-select: none;
   touch-action: manipulation;
   will-change: transform;
-  margin-bottom: 100px;
+  margin-bottom: 50px;
 }
 
 .button-27:disabled {
