@@ -26,13 +26,9 @@
         <label for="text">Client Name: </label>
         <input type="text" value="{{ current_user.username }}" disabled />
         <label for="date">Select a date:</label>
-        <input
-          type="date"
-          id="date"
-          name="date"
-          title="Select the date you want to view bookings for"
-          required
-        />
+        <input type="date" id="date" name="date" title="Select the date you want
+        to view bookings for" id="datePicker" min="<?php echo date("Y-m-d"); ?>"
+        required />
         <input type="number" name="size" placeholder="Size" required />
         <textarea
           name="description"
@@ -53,6 +49,10 @@
           window.location.href = "/";
         }
       });
+    </script>
+    <script>
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("datePicker").min = today;
     </script>
   </body>
 </html>
