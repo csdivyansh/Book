@@ -28,12 +28,11 @@
         <label for="date">Select a date:</label>
         <input
           type="date"
-          id="date"
-          name="date"
-          title="Select the date you want
-        to view bookings for"
+          id="date"  name="date"
+          title="Select the date you want to view bookings for"
           required
         />
+
         <input type="number" name="size" placeholder="Size" required />
         <textarea
           name="description"
@@ -44,7 +43,14 @@
       </form>
     </div>
     <footer>© Designed and Developed by Divyansh (CsDiv2025)</footer>
+
     <script>
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      document.getElementById('date').setAttribute('min', formattedDate);
       window.addEventListener("pageshow", function (event) {
         const isBackNav =
           event.persisted ||
