@@ -40,6 +40,12 @@
         <button class="button" role="button" type="submit">
           <span>View</span>
         </button>
+        <a href="{{ url_for('view_all_bookings') }}" class="link"
+          >View All Bookings</a
+        >
+        {% if current_user.role == 'Admin' %}
+        <a href="{{ url_for('export_csv') }}" class="link">Export</a>
+        {% endif %}
       </form>
     </div>
     <div class="bookings">
@@ -66,7 +72,6 @@
       </div>
       {% endfor %}
     </div>
-    <footer>© Designed and Developed by Divyansh (CsDiv2025)</footer>
     <script>
       window.addEventListener("pageshow", function (event) {
         const isBackNav =

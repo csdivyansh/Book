@@ -1,14 +1,13 @@
-import io, os, random, string
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+import io, os, random, string, csv
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, make_response, Response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
 from db_setup import Base, Entity, Client
 from PIL import  Image, ImageDraw, ImageFont
-from flask import Response
 from datetime import datetime
-from sqlalchemy import or_
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -78,6 +77,8 @@ def register():
 @login_required
 @app.route('/')
 def home():
+    if not current_user.is_authenticated:
+        return render_template('login.html')
     now = datetime.now()
     formatted_date = now.strftime("%d-%m-%Y")
     formatted_datetime = now.strftime("%d-%m-%Y %H:%M:%S")
@@ -123,10 +124,23 @@ def view():
                     Entity.date == selected_date,
                     Entity.client_id == current_user.id
                 ).all()
-        except Exception as e:
+        except Exception as e:  
             flash(f"Error: {str(e)}")
 
     return render_template('view.html', bookings=bookings, selected_date=selected_date)
+
+@app.route('/view_all_bookings', methods=['GET'])
+@login_required
+def view_all_bookings():
+    # If the user is an Admin, show all bookings
+    if current_user.role == 'Admin':
+        bookings = db_session.query(Entity).all()
+    else:
+        # If the user is a regular client, show only their bookings
+        bookings = db_session.query(Entity).filter(Entity.client_id == current_user.id).all()
+
+    return render_template('viewall.html', bookings=bookings)
+
 
 @app.route('/delete/<int:booking_id>', methods=['POST'])
 @login_required
@@ -139,3 +153,39 @@ def delete_booking(booking_id):
     else:
         flash("Booking not found.")
     return redirect(url_for('view'))
+
+@app.route('/export_csv', methods=['GET'])
+@login_required
+def export_csv():
+    if current_user.role != 'Admin':
+        flash('Unauthorized access.', 'error')
+        return redirect(url_for('home'))
+
+    # Fetch all bookings
+    bookings = db_session.query(Entity).all()
+
+    # Create CSV in memory
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Client', 'Date', 'Size', 'Description', 'Completed'])  # Headers
+    for booking in bookings:
+        writer.writerow([
+            booking.client.username if booking.client else 'N/A',
+            booking.date.strftime('%d-%m-%Y') if booking.date else '',
+            booking.size,
+            booking.description,
+            'Yes' if booking.completed else 'No'
+        ])
+    output.seek(0)
+
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={
+            "Content-Disposition": "attachment; filename=bookings.csv"
+        }
+    )
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
