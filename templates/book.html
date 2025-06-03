@@ -10,25 +10,15 @@
     />
   </head>
   <body>
+    <h2>Book a Wall</h2>
     <div class="container">
-      <h2>Book an Entity</h2>
-      {% with messages = get_flashed_messages() %} {% if messages %}
-      <div class="flash">
-        <span
-          class="closebtn"
-          onclick="this.parentElement.style.display='none';"
-          >&times;</span
-        >
-        {% for message in messages %} {{ message }} {% endfor %}
-      </div>
-      {% endif %} {% endwith %}
       <form method="POST">
-        <label for="text">Client Name: </label>
-        <input type="text" value="{{ current_user.username }}" disabled />
+        <label for="text">Username: {{ current_user.username }}</label>
         <label for="date">Select a date:</label>
         <input
           type="date"
-          id="date"  name="date"
+          id="date"
+          name="date"
           title="Select the date you want to view bookings for"
           required
         />
@@ -41,15 +31,25 @@
         ></textarea>
         <button class="button" type="submit"><span>Book</span></button>
       </form>
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flash">
+        <span
+          class="closebtn"
+          onclick="this.parentElement.style.display='none';"
+          >&times;</span
+        >
+        {% for message in messages %} {{ message }} {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
     </div>
 
     <script>
       const today = new Date();
       const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
       const formattedDate = `${year}-${month}-${day}`;
-      document.getElementById('date').setAttribute('min', formattedDate);
+      document.getElementById("date").setAttribute("min", formattedDate);
       window.addEventListener("pageshow", function (event) {
         const isBackNav =
           event.persisted ||
