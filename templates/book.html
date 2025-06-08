@@ -4,33 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book</title>
+
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='styles.css') }}"
+      href="{{ url_for('static', filename='style.css') }}"
     />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h2>Book a Wall</h2>
+    <h1>Book a Wall</h1>
     <div class="container">
-      <form method="POST">
-        <label for="text">Username: {{ current_user.username }}</label>
-        <label for="date">Select a date:</label>
-        <input
-          type="date"
-          id="date"
-          name="date"
-          title="Select the date you want to view bookings for"
-          required
-        />
-
-        <input type="number" name="size" placeholder="Size" required />
-        <textarea
-          name="description"
-          placeholder="Description"
-          required
-        ></textarea>
-        <button class="button" type="submit"><span>Book</span></button>
-      </form>
       {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="flash">
         <span
@@ -41,6 +24,28 @@
         {% for message in messages %} {{ message }} {% endfor %}
       </div>
       {% endif %} {% endwith %}
+      <form method="POST" class="form-container">
+        <label for="text">Username: {{ current_user.username }}</label>
+        <br>
+        <label for="date">Select a date:</label>
+        <input
+          type="date"
+          id="date"
+          name="date"
+          title="Select the date you want to view bookings for"
+          required
+        />
+        <br>
+        <input type="number" name="size" placeholder="Size" required />
+        <br>
+        <textarea
+          name="description"
+          placeholder="Venue"
+          required
+        ></textarea>
+        <br>
+        <button class="button" type="submit"><span>Book</span></button>
+      </form>
     </div>
 
     <script>
@@ -58,6 +63,12 @@
         if (isBackNav) {
           window.location.href = "/";
         }
+      });
+
+      window.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.querySelector('input[type="date"]');
+        const today = new Date().toISOString().split("T")[0];
+        dateInput.value = today;
       });
     </script>
   </body>

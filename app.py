@@ -129,18 +129,35 @@ def view():
 
     return render_template('view.html', bookings=bookings, selected_date=selected_date)
 
+from collections import defaultdict
+
 @app.route('/view_all_bookings', methods=['GET'])
 @login_required
 def view_all_bookings():
-    # If the user is an Admin, show all bookings
     if current_user.role == 'Admin':
         bookings = db_session.query(Entity).all()
     else:
-        # If the user is a regular client, show only their bookings
         bookings = db_session.query(Entity).filter(Entity.client_id == current_user.id).all()
 
-    return render_template('viewall.html', bookings=bookings)
+    bookings_by_month = defaultdict(list)
+    for booking in bookings:
+        if booking.date:
+            month = booking.date.strftime('%B %Y')
+            bookings_by_month[month].append(booking)
 
+    return render_template('viewall.html', bookings_by_month=bookings_by_month)
+
+@app.route('/toggle_complete/<int:booking_id>', methods=['POST'])
+@login_required
+def toggle_complete(booking_id):
+    booking = db_session.query(Entity).filter_by(id=booking_id).first()
+    if booking:
+        booking.completed = not booking.completed
+        db_session.commit()
+        flash("Booking status updated.")
+    else:
+        flash("Booking not found.")
+    return redirect(url_for('view_all_bookings'))
 
 @app.route('/delete/<int:booking_id>', methods=['POST'])
 @login_required
@@ -152,7 +169,7 @@ def delete_booking(booking_id):
         flash("Booking deleted successfully.")
     else:
         flash("Booking not found.")
-    return redirect(url_for('view'))
+    return redirect(url_for('view_all_bookings'))
 
 @app.route('/export_csv', methods=['GET'])
 @login_required

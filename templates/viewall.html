@@ -6,46 +6,93 @@
     <title>View All Bookings</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='styles.css') }}"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-...your-integrity-hash..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
   </head>
   <body>
+    <h1>All Bookings</h1>
+
     <div class="container">
-      <h2>All Bookings</h2>
-
+      {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="flash">
-        {% with messages = get_flashed_messages() %} {% if messages %}
-        <ul>
-          {% for message in messages %}
-          <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %} {% endwith %}
+        <span
+          class="closebtn"
+          onclick="this.parentElement.style.display='none';"
+          >&times;</span
+        >
+        {% for message in messages %} {{ message }} {% endfor %}
       </div>
-
-      <div class="bookings">
-        {% for booking in bookings %}
-        <div class="booking-card">
-          <p><strong>Client:</strong> {{ booking.client.username }}</p>
-          <p><strong>Date:</strong> {{ booking.date.strftime('%d-%m-%Y') }}</p>
-          <p><strong>Size:</strong> {{ booking.size }}</p>
-          <p><strong>Description:</strong> {{ booking.description }}</p>
-          <p>
-            <strong>Status:</strong>
-            {% if booking.completed %} ✅ Completed {% else %} ❌ Not Completed
-            {% endif %}
-          </p>
-          <form
-            action="{{ url_for('delete_booking', booking_id=booking.id) }}"
-            method="POST"
-          >
-            <button class="delete" type="submit" title="Delete">Delete</button>
-          </form>
-        </div>
-        {% else %}
-        <p>No bookings found.</p>
-        {% endfor %}
-      </div>
+      {% endif %} {% endwith %}
     </div>
+
+    {% for month, bookings in bookings_by_month.items() %}
+    <h2>{{ month }}</h2>
+    <div class="table-container">
+      <table class="table-view">
+        <tr>
+          <th>Client</th>
+          <th>Date</th>
+          <th>Size</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        {% for booking in bookings %}
+        <tr>
+          <td>{{ booking.client.username }}</td>
+          <td>{{ booking.date.strftime('%d-%m-%Y') }}</td>
+          <td>{{ booking.size }}</td>
+          <td>{{ booking.description }}</td>
+          <td>
+            <form
+              action="{{ url_for('toggle_complete', booking_id=booking.id) }}"
+              method="POST"
+            >
+              <button type="submit">
+                {% if booking.completed %} ✅ Completed {% else %} ❌ Not
+                Completed {% endif %}
+              </button>
+            </form>
+          </td>
+
+          <td>
+            {% if booking.completed == False %}
+            <form
+              class="form-buttons"
+              action="{{ url_for('delete_booking', booking_id=booking.id) }}"
+              method="POST"
+              onsubmit="return confirm('Delete this booking?');"
+            >
+              <button class="delete" type="submit" title="Delete">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    {% else %}
+    <h2>No bookings found.</h2>
+    {% endfor %}
   </body>
+  <script>
+    window.addEventListener("pageshow", function (event) {
+      const isBackNav =
+        event.persisted ||
+        window.performance.getEntriesByType("navigation")[0]?.type ===
+          "back_forward";
+      if (isBackNav) {
+        window.location.href = "/view";
+      }
+    });
+  </script>
 </html>

@@ -6,7 +6,7 @@
     <title>View</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='styles.css') }}"
+      href="{{ url_for('static', filename='style.css') }}"
     />
     <link
       rel="stylesheet"
@@ -17,9 +17,8 @@
     />
   </head>
   <body>
+    <h1>View</h1>
     <div class="container">
-      <h2>Select a Date:</h2>
-
       {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="flash">
         <span
@@ -35,14 +34,18 @@
       </div>
       {% endif %} {% endwith %}
 
-      <form method="POST">
+      <form method="POST" class="form-container">
+        <label for="date">Select a Date:</label>
         <input type="date" name="date" required />
+        <br>
         <button class="button" role="button" type="submit">
           <span>View</span>
         </button>
+        <br>
         <a href="{{ url_for('view_all_bookings') }}" class="link"
           >View All Bookings</a
         >
+        <br>
         {% if current_user.role == 'Admin' %}
         <a href="{{ url_for('export_csv') }}" class="link">Export</a>
         {% endif %}
@@ -57,22 +60,24 @@
         <p><strong>Description:</strong> {{ booking.description }}</p>
         <p>
           <strong>Status:</strong>
-          {% if booking.completed %} Completed ✅{% else %} Not Completed ❌{%
-          endif %}
+          <form action="{{ url_for('toggle_complete', booking_id=booking.id) }}" method="POST" style="display:inline;">
+            <button type="submit">
+              {% if booking.completed %} ✅ Completed {% else %} ❌ Not Completed {% endif %}
+            </button>
+          </form>
         </p>
-        <form
-          action="{{ url_for('delete_booking', booking_id=booking.id) }}"
-          method="POST"
-          onsubmit="return confirm('Delete this booking?');"
-        >
-          <button class="delete" type="submit" title="Delete">
-            <i class="fa-solid fa-trash"></i>
-            
-          </button>
-          <button class="delete" type="submit" title="completed">
-            <i class="fa-solid fa-check"></i>
-          </button>
-        </form>
+        {% if booking.completed == False %}
+            <form
+              class="form-buttons"
+              action="{{ url_for('delete_booking', booking_id=booking.id) }}"
+              method="POST"
+              onsubmit="return confirm('Delete this booking?');"
+            >
+              <button class="delete" type="submit" title="Delete">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+            {% endif %}
       </div>
       {% endfor %}
     </div>
