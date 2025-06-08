@@ -2,27 +2,23 @@ name: Deploy to PythonAnywhere
 
 on:
   push:
-    branches: ["main"]
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Install wheel package
-        run: pip install wheel
+    - name: Install HTTPie
+      run: pip install httpie
 
-      - name: Install PythonAnywhere CLI
-        run: pip install --upgrade --no-build-isolation --no-cache-dir pythonanywhere-cli
-
-      - name: Upload to PythonAnywhere
-        run: |
-          python -m pythonanywhere.deploy \
-            --username "${{ secrets.PA_USERNAME }}" \
-            --api_token "${{ secrets.PA_API_TOKEN }}" \
-            --path . \
-            --target /home/orderd/mysite \
-            --domain orderd.pythonanywhere.com
+    - name: Deploy to PythonAnywhere
+      env:
+        PA_USERNAME: ${{ secrets.PA_USERNAME }}
+        PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}
+      run: |
+        http --form POST https://www.pythonanywhere.com/api/v0/user/$PA_USERNAME/webapps/yourusername.pythonanywhere.com/reload/ \
+        Authorization:"Token $PA_API_TOKEN"
