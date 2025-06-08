@@ -9,15 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clone repo
+    - name: Checkout Code
       uses: actions/checkout@v3
+
+    - name: Install PythonAnywhere CLI
+      run: pip install --upgrade pythonanywhere
 
     - name: Upload to PythonAnywhere
       run: |
-        pip install pythonanywhere
         python -m pythonanywhere.deploy \
-          --username ${{ secrets.PA_USERNAME }} \
-          --api_token ${{ secrets.PA_API_TOKEN }} \
+          --username "${{ secrets.PA_USERNAME }}" \
+          --api_token "${{ secrets.PA_API_TOKEN }}" \
           --path . \
           --target /home/orderd/mysite \
           --domain orderd.pythonanywhere.com
