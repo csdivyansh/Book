@@ -12,8 +12,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install wheel package
+        run: pip install wheel
+
       - name: Install PythonAnywhere CLI
-        run: pip install --upgrade pythonanywhere-cli
+        run: pip install --upgrade --no-build-isolation --no-cache-dir pythonanywhere-cli
 
       - name: Upload to PythonAnywhere
         run: |
